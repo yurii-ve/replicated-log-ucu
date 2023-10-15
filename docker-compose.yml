@@ -1,0 +1,16 @@
+version: '3'
+services:
+  main:
+    build: ./main
+    ports:
+      - '8080:8080'
+
+  secondary-instance-1:
+    build: ./secondary
+    ports:
+      - '8080:8080'
+
+  secondary-instance-2:
+    build: ./secondary
+    ports:
+      - '8080:8080'
