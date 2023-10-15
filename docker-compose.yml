@@ -3,14 +3,14 @@ services:
   main:
     build: ./main
     ports:
-      - '8080:8080'
+      - '8081:8080'
 
   secondary-instance-1:
     build: ./secondary
     ports:
-      - '8080:8080'
+      - '8082:8080'
 
   secondary-instance-2:
     build: ./secondary
     ports:
-      - '8080:8080'
+      - '8083:8080'

@@ -11,7 +11,11 @@ app.use(morgan('dev'));
 
 const messages = new Map();
 
-const secondaryHosts = ['http://localhost:8081', 'http://localhost:8082'];
+//TODO: make these more configurable (environment variables for example) - in the next iteration
+const secondaryHosts = [
+  'http://secondary-instance-1:8080',
+  'http://secondary-instance-2:8080',
+];
 
 app.post('/message', async (req, res) => {
   const newMessageId = uuid.v4();

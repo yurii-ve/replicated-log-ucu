@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:18
 
 WORKDIR /usr/app
 
@@ -7,4 +7,4 @@ COPY ./package-lock.json ./
 RUN npm install
 COPY ./ ./
 
-CMD ['npm', 'start']
+CMD npm start
