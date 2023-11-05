@@ -4,13 +4,19 @@ services:
     build: ./main
     ports:
       - '8081:8080'
+    environment:
+      - SECONDARY_HOSTS="http://secondary-instance-1:8080 http://secondary-instance-2:8080"
 
   secondary-instance-1:
     build: ./secondary
     ports:
       - '8082:8080'
+    environment:
+      - TEST_DELAY_MS=2000
 
   secondary-instance-2:
     build: ./secondary
     ports:
       - '8083:8080'
+    environment:
+      - TEST_DELAY_MS=5000
