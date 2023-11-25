@@ -13,9 +13,6 @@ app.use(morgan('dev'));
 const messages = new Map();
 
 app.post('/message', (req, res) => {
-  // to guarantee messages ordering
-  messages.set(req.body.id, null);
-
   setTimeout(() => {
     messages.set(req.body.id, req.body.message);
     res.status(200).send('OK');
@@ -23,7 +20,11 @@ app.post('/message', (req, res) => {
 });
 
 app.get('/messages', (_, res) => {
-  const savedMessages = [...messages.values()].filter((msg) => msg !== null);
+  const sortedKeys = [...messages.keys()].sort((a, b) => a - b);
+  const savedMessages = sortedKeys
+    .map((key) => messages.get(key))
+    .filter((msg) => msg !== null);
+
   res.status(200).send({ messages: savedMessages });
 });
 

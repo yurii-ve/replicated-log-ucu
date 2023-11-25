@@ -1,6 +1,5 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import * as uuid from 'uuid';
 import morgan from 'morgan';
 
 const PORT = process.env.PORT ?? 8080;
@@ -13,8 +12,9 @@ const messages = new Map();
 
 const secondaryHosts = process.env.SECONDARY_HOSTS?.split(' ') ?? [];
 
+let messagesCount = 0;
+
 app.post('/message', async (req, res) => {
-  const newMessageId = uuid.v4();
   const w = req.body.w ?? 1; // write concern parameter
 
   if (w <= 0) {
@@ -23,7 +23,7 @@ app.post('/message', async (req, res) => {
       .send({ error: 'Write concern parameter w must be larger than 0' });
   }
 
-  // to guarantee messages ordering
+  const newMessageId = messagesCount++;
   messages.set(newMessageId, null);
 
   function replicateMessageToSecondary(host, message) {
@@ -61,7 +61,11 @@ app.post('/message', async (req, res) => {
 });
 
 app.get('/messages', (_, res) => {
-  const savedMessages = [...messages.values()].filter((msg) => msg !== null);
+  const sortedKeys = [...messages.keys()].sort((a, b) => a - b);
+  const savedMessages = sortedKeys
+    .map((key) => messages.get(key))
+    .filter((msg) => msg !== null);
+
   res.status(200).send({ messages: savedMessages });
 });
 
