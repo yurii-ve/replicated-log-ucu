@@ -21,11 +21,21 @@ app.post('/message', (req, res) => {
 
 app.get('/messages', (_, res) => {
   const sortedKeys = [...messages.keys()].sort((a, b) => a - b);
-  const savedMessages = sortedKeys
-    .map((key) => messages.get(key))
-    .filter((msg) => msg !== null);
+  const messagesToSend = [];
+  let prevMessageIndex;
+  for (const currentIndex of sortedKeys) {
+    if (prevMessageIndex && prevMessageIndex - currentIndex > 1) {
+      break;
+    }
+    messagesToSend.push(messages.get(currentIndex));
+    prevMessageIndex = currentIndex;
+  }
 
-  res.status(200).send({ messages: savedMessages });
+  res.status(200).send({ messages: messagesToSend });
+});
+
+app.get('/health', (_, res) => {
+  res.send(200);
 });
 
 app.listen(PORT, () => {
